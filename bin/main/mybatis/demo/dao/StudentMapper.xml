@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+			PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+			"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.demo.dao.StudentMapper">
+
+	<resultMap type="mybatis.demo.entity.Student" id="studentMap">
+		<id property="uId" column="uid" jdbcType="BIGINT"/>
+		<result property="name" column="name" jdbcType="VARCHAR"/>
+		<result property="sex" column="sex" jdbcType="VARCHAR"/>
+		<result property="age" column="age" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<select id="findAllStudents" resultMap="studentMap">
+		select * from student
+	</select>
+	
+	<insert id="saveStudent" useGeneratedKeys="true" parameterType="mybatis.demo.entity.Student">
+		insert into student 
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="sex != null" >
+                sex,
+            </if>
+            <if test="age != null" >
+                age,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null" >
+                #{sex, jdbcType=VARCHAR},
+            </if>
+            <if test="age != null" >
+                #{age, jdbcType=INTEGER},
+            </if>
+        </trim>
+	</insert>
+	
+	<update id="editStudent" parameterType="mybatis.demo.entity.Student">
+		update student
+		<set >
+                name = #{name, jdbcType=VARCHAR},
+                sex = #{sex, jdbcType=VARCHAR},
+                age = #{age, jdbcType=INTEGER},
+        </set>
+        where uid = #{uId, jdbcType=BIGINT}
+	</update>
+	
+	<delete id="removeStudent" parameterType="long">
+		delete from student where uid = #{uId, jdbcType=BIGINT}
+	</delete>
+	
+	<select id="findStudentById" parameterType="Long" resultMap="studentMap">
+		select * from student where uid = #{uId, jdbcType=BIGINT}
+	</select>
+</mapper>
